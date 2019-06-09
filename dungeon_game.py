@@ -23,7 +23,6 @@ door = None
 player = None
 move = None
 
-
 def get_locations(CELLS, arg):
     taken = [] 
     not_taken = CELLS 
@@ -32,6 +31,7 @@ def get_locations(CELLS, arg):
     taken.append(location)
     arg = location
     return arg
+
 
 def check_move(move, moves, player):
     while True:
@@ -50,81 +50,66 @@ def check_move(move, moves, player):
             continue
 
 
-
 def move_player(player, move):
-    # get player's location
-    # if move == LEFT, x-1
     if move == "LEFT":
         player_x = player[0] - 1
         player = player_x, player[1]
-        print(player)
         return player    
-    # if move == RIGHT, x+1
     if move == "RIGHT":
         player_x = player[0] + 1
         player = player_x, player[1]
-        print(player)
         return player 
-    # if move == UP, y-1
     if move == "UP":
         player_y = player[1] - 1
         player = player[0], player_y
-        print(player)
         return player 
-    # if move == DOWN, y+1
     if move == "DOWN":
         player_y = player[1] + 1
         player = player[0], player_y
-        print(player)
         return player 
     
 
 def get_moves(player):
     moves = {"LEFT", "RIGHT", "UP", "DOWN"}
-    # if player's y == 0, they can't move up
     if player[1] <= 0:
         moves = moves - {"UP"}
-    # if player's y == 4, they can't move down
     if player[1] >= 4:
         moves = moves - {"DOWN"}
-    # if player's x == 0, they can't move left
     if player[0] <= 0:
         moves = moves - {"LEFT"}
-    # if player's x == 4, they can't move right
     if player[0] >= 4:
         moves = moves - {"RIGHT"}
     return moves
 
 
-
+def end_game(outcome):
+    if outcome is True:
+        print("You have reached the door! You won!")
+        exit()
+    if outcome is False:
+        print("The monster got you! You lost!")
+        exit()
 
 
 player = get_locations(CELLS, player)
 door = get_locations(CELLS, door)
 monster = get_locations(CELLS, monster)
+print("Welcome to the dungeon!")
+print("Enter QUIT to quit")
+
 
 while True:
-    print(player)
-    print("Welcome to the dungeon!")
     print("You're currently in room {}".format(player))
     moves = get_moves(player)
-    print("You can move {}".format(moves)) # fill with available moves
-    print("Enter QUIT to quit")
-
+    print("You can move {}".format(moves))
     move = check_move(move, moves, player)
-
-
     player = move_player(player, move)
-    continue
-
-
-    # good move? change players position
-    # bad move? Don't change anything
-    # bad move? Don't change anything
-    # On the door? They win!
-    # On the monster? They lose!
-    # Otherwise, loop back around
-    
-
-
+    if player == door:
+        outcome = True
+        end_game(True)
+    elif player == monster:
+        outcome = False
+        end_game(False)
+    else:
+        continue
 
