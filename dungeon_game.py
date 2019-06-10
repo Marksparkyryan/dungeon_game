@@ -46,14 +46,8 @@ def draw_grid(CELLS, player):
         
     
 
-def get_locations(CELLS, arg):
-    taken = [] 
-    not_taken = CELLS.copy() 
-    location = random.choice(not_taken)
-    not_taken.remove(location)
-    taken.append(location)
-    arg = location
-    return arg
+def get_locations():
+    return random.sample(CELLS, 3)
 
 
 def check_move(move, moves, player):
@@ -118,9 +112,7 @@ def end_game(outcome, graphic):
         exit()
 
 
-player = get_locations(CELLS, player)
-door = get_locations(CELLS, door)
-monster = get_locations(CELLS, monster)
+player, door, monster = get_locations()
 clear_screen()
 print("monster: ", monster)
 print("door: ", door)
