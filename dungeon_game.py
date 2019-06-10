@@ -1,4 +1,7 @@
 import random
+import os
+from dungeon_graphics import monster_graphic, door_graphic
+
 
 
 
@@ -22,10 +25,30 @@ monster = None
 door = None
 player = None
 move = None
+history = []
+monster_graphic = monster_graphic
+
+
+def clear_screen():
+    os.system("cls" if os.name == "nt" else "clear")
+
+
+def draw_grid(CELLS, player):
+    for row in range(5):
+        for col in range(5):
+            if (col,row) == player:
+                print("[@]", end=" ")
+            elif (col, row) in history:
+                print("[.]", end=" ")
+            else:
+                print("[ ]", end=" ")
+        print("\n")
+        
+    
 
 def get_locations(CELLS, arg):
     taken = [] 
-    not_taken = CELLS 
+    not_taken = CELLS.copy() 
     location = random.choice(not_taken)
     not_taken.remove(location)
     taken.append(location)
@@ -82,11 +105,15 @@ def get_moves(player):
     return moves
 
 
-def end_game(outcome):
+def end_game(outcome, graphic):
     if outcome is True:
+        os.system("clear")
+        print(door_graphic)
         print("You have reached the door! You won!")
         exit()
     if outcome is False:
+        os.system("clear")
+        print(monster_graphic)
         print("The monster got you! You lost!")
         exit()
 
@@ -94,22 +121,30 @@ def end_game(outcome):
 player = get_locations(CELLS, player)
 door = get_locations(CELLS, door)
 monster = get_locations(CELLS, monster)
-print("Welcome to the dungeon!")
+clear_screen()
+print("monster: ", monster)
+print("door: ", door)
+print("Welcome to the dungeon! Try to escape without getting caught by " 
+      "the monster!")
 print("Enter QUIT to quit")
 
 
 while True:
+    draw_grid(CELLS, player)
     print("You're currently in room {}".format(player))
+    history.append(player)
     moves = get_moves(player)
     print("You can move {}".format(moves))
     move = check_move(move, moves, player)
     player = move_player(player, move)
+    history.append(player)
     if player == door:
         outcome = True
-        end_game(True)
+        end_game(True, door_graphic)
     elif player == monster:
         outcome = False
-        end_game(False)
+        end_game(False, monster_graphic)
     else:
+        clear_screen()
         continue
 
