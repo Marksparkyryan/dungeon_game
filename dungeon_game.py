@@ -26,7 +26,6 @@ door = None
 player = None
 move = None
 history = []
-monster_graphic = monster_graphic
 
 
 def clear_screen():
@@ -68,33 +67,28 @@ def check_move(move, moves, player):
 
 
 def move_player(player, move):
+    x, y = player
     if move == "LEFT":
-        player_x = player[0] - 1
-        player = player_x, player[1]
-        return player    
+        x -= 1
     if move == "RIGHT":
-        player_x = player[0] + 1
-        player = player_x, player[1]
-        return player 
+        x += 1
     if move == "UP":
-        player_y = player[1] - 1
-        player = player[0], player_y
-        return player 
+        y -= 1 
     if move == "DOWN":
-        player_y = player[1] + 1
-        player = player[0], player_y
-        return player 
+        y += 1
+    return x, y  
     
 
 def get_moves(player):
     moves = {"LEFT", "RIGHT", "UP", "DOWN"}
-    if player[1] <= 0:
+    x, y = player
+    if y == 0:
         moves = moves - {"UP"}
-    if player[1] >= 4:
+    if y == 4:
         moves = moves - {"DOWN"}
-    if player[0] <= 0:
+    if x == 0:
         moves = moves - {"LEFT"}
-    if player[0] >= 4:
+    if x == 4:
         moves = moves - {"RIGHT"}
     return moves
 
@@ -114,6 +108,7 @@ def end_game(outcome, graphic):
 
 player, door, monster = get_locations()
 clear_screen()
+print("player: ", player)
 print("monster: ", monster)
 print("door: ", door)
 print("Welcome to the dungeon! Try to escape without getting caught by " 
@@ -128,6 +123,7 @@ while True:
     moves = get_moves(player)
     print("You can move {}".format(moves))
     move = check_move(move, moves, player)
+    print("move checked succes")
     player = move_player(player, move)
     history.append(player)
     if player == door:
