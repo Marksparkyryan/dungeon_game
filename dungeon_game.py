@@ -49,7 +49,7 @@ def get_locations():
     return random.sample(CELLS, 3)
 
 
-def check_move(move, moves, player):
+def check_move(moves, player):
     while True:
         move = input("> ")
         move = move.upper()
@@ -98,41 +98,53 @@ def end_game(outcome, graphic):
         os.system("clear")
         print(door_graphic)
         print("You have reached the door! You won!")
-        exit()
+        play_again()
     if outcome is False:
         os.system("clear")
         print(monster_graphic)
         print("The monster got you! You lost!")
-        exit()
+        play_again()
 
 
-player, door, monster = get_locations()
-clear_screen()
-print("player: ", player)
-print("monster: ", monster)
-print("door: ", door)
-print("Welcome to the dungeon! Try to escape without getting caught by " 
-      "the monster!")
-print("Enter QUIT to quit")
 
+def game_loop():
+    player, door, monster = get_locations()
+    history.clear()
+    clear_screen()
+    print("player: ", player)
+    print("monster: ", monster)
+    print("door: ", door)
+    print("Welcome to the dungeon! Try to escape without getting caught by " 
+        "the monster!")
+    print("Enter QUIT to quit")
+    input("Press enter to start playing!")
+    playing = True
 
-while True:
-    draw_grid(CELLS, player)
-    print("You're currently in room {}".format(player))
-    history.append(player)
-    moves = get_moves(player)
-    print("You can move {}".format(moves))
-    move = check_move(move, moves, player)
-    print("move checked succes")
-    player = move_player(player, move)
-    history.append(player)
-    if player == door:
-        outcome = True
-        end_game(True, door_graphic)
-    elif player == monster:
-        outcome = False
-        end_game(False, monster_graphic)
-    else:
+    while playing:
         clear_screen()
-        continue
+        draw_grid(CELLS, player)
+        print("You're currently in room {}".format(player))
+        history.append(player)
+        moves = get_moves(player)
+        print("You can move {}".format(moves))
+        move = check_move(moves, player)
+        print("move checked succes")
+        player = move_player(player, move)
+        history.append(player)
+        if player == door:
+            os.system("clear")
+            print(door_graphic)
+            print("TYou have reached the door and escaped! You won!")
+            playing = False
+        elif player == monster:
+            os.system("clear")
+            print(monster_graphic)
+            print("The monster got you! You lost!")
+            playing = False
+        else:
+            continue
+    
+    if input("Play again? y/n").lower() != "n":
+        game_loop() 
 
+game_loop()
